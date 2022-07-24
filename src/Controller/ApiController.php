@@ -6,6 +6,7 @@ use App\Entity\RawLog;
 use App\Repository\APIKeyRepository;
 use App\Repository\RawLogRepository;
 use App\Service\RawLogService;
+use App\Utilities\PlainTextResponse;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -49,8 +50,8 @@ class ApiController extends AbstractController
         $rawLogService->updatePlayerData($entry);
         $entityManager->flush();
 
-        return $this->json([
-            'success' => true,
-        ]);
+        return $this->render('api/report-join.txt.twig', [
+            'log' => $entry,
+        ], new PlainTextResponse());
     }
 }
