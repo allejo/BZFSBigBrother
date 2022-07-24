@@ -34,29 +34,29 @@ class APIKey
      * @var int
      *
      * @ORM\Id
-     * @ORM\Column(type="integer", nullable=false, options={"unsigned"=true})
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue()
      */
     private $id;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="apikey", type="string", length=40, nullable=false)
+     * @ORM\Column(type="string", length=40, nullable=false)
      */
     private $key;
 
     /**
      * @var bool
      *
-     * @ORM\Column(name="active", type="boolean", nullable=false)
+     * @ORM\Column(type="boolean", nullable=false)
      */
     private $active;
 
     /**
      * @var int
      *
-     * @ORM\Column(name="owner", type="integer", nullable=false, options={"unsigned"=true})
+     * @ORM\Column(type="integer", nullable=false, options={"unsigned"=true})
      */
     private $owner;
 

@@ -30,22 +30,22 @@ class Address
      * @var int
      *
      * @ORM\Id
-     * @ORM\Column(type="integer", nullable=false, options={"unsigned"=true})
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue()
      */
     private $id;
 
     /**
      * @var null|string
      *
-     * @ORM\Column(name="ipaddress", type="string", length=15, nullable=true)
+     * @ORM\Column(type="string", length=15, nullable=true)
      */
     private $ipAddress;
 
     /**
      * @var null|string
      *
-     * @ORM\Column(name="hostname", type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $hostname;
 

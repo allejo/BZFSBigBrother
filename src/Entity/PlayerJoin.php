@@ -24,8 +24,8 @@ class PlayerJoin
      * @var int
      *
      * @ORM\Id
-     * @ORM\Column(type="integer", nullable=false, options={"unsigned"=true})
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue()
      */
     private $id;
 
@@ -33,7 +33,7 @@ class PlayerJoin
      * @var null|Callsign
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Callsign")
-     * @ORM\JoinColumn(name="callsignid", nullable=false)
+     * @ORM\JoinColumn(nullable=false)
      */
     private $callsign;
 
@@ -41,14 +41,14 @@ class PlayerJoin
      * @var null|Address
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Address")
-     * @ORM\JoinColumn(name="addressid", nullable=false)
+     * @ORM\JoinColumn(nullable=false)
      */
     private $address;
 
     /**
      * @var null|DateTime
      *
-     * @ORM\Column(name="eventtime", type="datetime", nullable=true)
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $eventTime;
 

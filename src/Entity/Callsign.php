@@ -22,15 +22,15 @@ class Callsign
      * @var int
      *
      * @ORM\Id
-     * @ORM\Column(type="integer", nullable=false, options={"unsigned"=true})
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue()
      */
     private $id;
 
     /**
      * @var null|string
      *
-     * @ORM\Column(name="callsign", type="string", length=32, nullable=true)
+     * @ORM\Column(type="string", length=32, nullable=true)
      */
     private $callsign;
 

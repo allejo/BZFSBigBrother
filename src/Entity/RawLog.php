@@ -24,36 +24,36 @@ class RawLog
      * @var int
      *
      * @ORM\Id
-     * @ORM\Column(type="integer", nullable=false, options={"unsigned"=true})
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue()
      */
     private $id;
 
     /**
      * @var null|string
      *
-     * @ORM\Column(name="callsign", type="string", length=32, nullable=true)
+     * @ORM\Column(type="string", length=32, nullable=true)
      */
     private $callsign;
 
     /**
      * @var null|string
      *
-     * @ORM\Column(name="bzid", type="string", length=32, nullable=true)
+     * @ORM\Column(type="string", length=32, nullable=true)
      */
     private $bzid;
 
     /**
      * @var null|string
      *
-     * @ORM\Column(name="ipaddress", type="string", length=15, nullable=true)
+     * @ORM\Column(type="string", length=15, nullable=true)
      */
     private $ipAddress;
 
     /**
      * @var null|string
      *
-     * @ORM\Column(name="hostname", type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $hostname;
 
@@ -61,21 +61,21 @@ class RawLog
      * @var APIKey
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\APIKey")
-     * @ORM\JoinColumn(name="apikey", nullable=false)
+     * @ORM\JoinColumn(nullable=false)
      */
     private $apikey;
 
     /**
      * @var null|DateTime
      *
-     * @ORM\Column(name="eventtime", type="datetime", nullable=true)
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $eventTime;
 
     /**
      * @var null|string
      *
-     * @ORM\Column(name="build", type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $build;
 
