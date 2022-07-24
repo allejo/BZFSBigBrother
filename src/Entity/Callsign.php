@@ -21,8 +21,8 @@ class Callsign
     /**
      * @var int
      *
-     * @ORM\Column(name="callsignid", type="integer", nullable=false, options={"unsigned"=true})
      * @ORM\Id
+     * @ORM\Column(type="integer", nullable=false, options={"unsigned"=true})
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;

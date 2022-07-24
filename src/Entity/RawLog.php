@@ -23,8 +23,8 @@ class RawLog
     /**
      * @var int
      *
-     * @ORM\Column(name="rawlogid", type="integer", nullable=false, options={"unsigned"=true})
      * @ORM\Id
+     * @ORM\Column(type="integer", nullable=false, options={"unsigned"=true})
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
