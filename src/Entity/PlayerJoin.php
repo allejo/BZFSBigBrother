@@ -30,18 +30,20 @@ class PlayerJoin
     private $id;
 
     /**
-     * @var null|int
+     * @var null|Callsign
      *
-     * @ORM\Column(name="callsignid", type="integer", nullable=true, options={"unsigned"=true})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Callsign")
+     * @ORM\JoinColumn(name="callsignid", nullable=false)
      */
-    private $callsignid;
+    private $callsign;
 
     /**
-     * @var null|int
+     * @var null|Address
      *
-     * @ORM\Column(name="addressid", type="integer", nullable=true, options={"unsigned"=true})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Address")
+     * @ORM\JoinColumn(name="addressid", nullable=false)
      */
-    private $addressid;
+    private $address;
 
     /**
      * @var null|DateTime
@@ -55,26 +57,26 @@ class PlayerJoin
         return $this->id;
     }
 
-    public function getCallsignid(): ?int
+    public function getCallsign(): ?Callsign
     {
-        return $this->callsignid;
+        return $this->callsign;
     }
 
-    public function setCallsignid(?int $callsignid): self
+    public function setCallsign(?Callsign $callsign): self
     {
-        $this->callsignid = $callsignid;
+        $this->callsign = $callsign;
 
         return $this;
     }
 
-    public function getAddressid(): ?int
+    public function getAddress(): ?Address
     {
-        return $this->addressid;
+        return $this->address;
     }
 
-    public function setAddressid(?int $addressid): self
+    public function setAddress(?Address $address): self
     {
-        $this->addressid = $addressid;
+        $this->address = $address;
 
         return $this;
     }

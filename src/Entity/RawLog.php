@@ -58,9 +58,10 @@ class RawLog
     private $hostname;
 
     /**
-     * @var string
+     * @var APIKey
      *
-     * @ORM\Column(name="apikey", type="string", length=40, nullable=false)
+     * @ORM\ManyToOne(targetEntity="App\Entity\APIKey")
+     * @ORM\JoinColumn(name="apikey", nullable=false)
      */
     private $apikey;
 
@@ -131,12 +132,12 @@ class RawLog
         return $this;
     }
 
-    public function getApikey(): ?string
+    public function getApikey(): ?APIKey
     {
         return $this->apikey;
     }
 
-    public function setApikey(string $apikey): self
+    public function setApikey(APIKey $apikey): self
     {
         $this->apikey = $apikey;
 
