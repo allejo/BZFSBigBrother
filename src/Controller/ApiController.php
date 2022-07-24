@@ -29,6 +29,7 @@ class ApiController extends AbstractController
     ): Response {
         $apiKeyRaw = $request->get('apikey');
         $apiKey = $keyRepository->findOneBy([
+            'active' => true,
             'key' => $apiKeyRaw,
         ]);
 
