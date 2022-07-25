@@ -38,4 +38,36 @@ class PlayerJoinRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+
+    public function findUniqueJoinsByIP(string $ipAddress, int $daysBack = 180): array
+    {
+        return $this->createQueryBuilder('j')
+            ->select('c.callsign', 'a.ipAddress', 'a.hostname', 'COUNT(j.id) times')
+            ->distinct()
+            ->join('j.address', 'a')
+            ->join('j.callsign', 'c')
+            ->where('a.ipAddress = :ipAddress')
+            ->andWhere('j.eventTime > DATE_SUB(NOW(), interval :daysBack day)')
+            ->setParameter('ipAddress', $ipAddress)
+            ->setParameter('daysBack', $daysBack)
+            ->getQuery()
+            ->getArrayResult()
+        ;
+    }
+
+    public function findUniqueIPsByCallsign(string $callsign, int $daysBack = 180): array
+    {
+        return $this->createQueryBuilder('j')
+            ->select('a.ip_address')
+            ->distinct()
+            ->join('j.address', 'a')
+            ->join('j.callsign', 'c')
+            ->where('c.callsign = :callsign')
+            ->andWhere('j.eventTime > DATE_SUB(NOW(), interval :daysBack day)')
+            ->setParameter('callsign', $callsign)
+            ->setParameter('daysBack', $daysBack)
+            ->getQuery()
+            ->getArrayResult()
+        ;
+    }
 }
