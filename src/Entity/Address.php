@@ -6,48 +6,23 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * An address is an IP + Host combination.
- *
- * @ORM\Table(
- *     name="addresses",
- *     uniqueConstraints={
- *         @ORM\UniqueConstraint(
- *             name="iphost_INDEX",
- *             columns={"ipaddress", "hostname"}
- *         )
- *     },
- *     indexes={
- *         @ORM\Index(
- *             name="hostname_INDEX",
- *             columns={"hostname"}
- *         )
- *     }
- * )
- * @ORM\Entity(repositoryClass="App\Repository\AddressRepository")
  */
+#[ORM\Table(name: 'addresses')]
+#[ORM\UniqueConstraint(name: 'iphost_INDEX', columns: ['ipaddress', 'hostname'])]
+#[ORM\Index(name: 'hostname_INDEX', columns: ['hostname'])]
+#[ORM\Entity(repositoryClass: \App\Repository\AddressRepository::class)]
 class Address
 {
-    /**
-     * @var int
-     *
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue()
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue]
+    private readonly int $id;
 
-    /**
-     * @var null|string
-     *
-     * @ORM\Column(type="string", length=15, nullable=true)
-     */
-    private $ipAddress;
+    #[ORM\Column(type: 'string', length: 15, nullable: true)]
+    private ?string $ipAddress = null;
 
-    /**
-     * @var null|string
-     *
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $hostname;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $hostname = null;
 
     public function getId(): ?int
     {

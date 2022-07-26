@@ -2,54 +2,28 @@
 
 namespace App\Entity;
 
-use DateTime;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Table(
- *     name="joins",
- *     indexes={
- *         @ORM\Index(
- *             name="when_INDEX",
- *             columns={"eventtime"}
- *         )
- *     }
- * )
- * @ORM\Entity(repositoryClass="App\Repository\PlayerJoinRepository")
- */
+#[ORM\Table(name: 'joins')]
+#[ORM\Index(name: 'when_INDEX', columns: ['eventtime'])]
+#[ORM\Entity(repositoryClass: \App\Repository\PlayerJoinRepository::class)]
 class PlayerJoin
 {
-    /**
-     * @var int
-     *
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue()
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue]
+    private readonly int $id;
 
-    /**
-     * @var null|Callsign
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Callsign")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $callsign;
+    #[ORM\ManyToOne(targetEntity: \App\Entity\Callsign::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?\App\Entity\Callsign $callsign = null;
 
-    /**
-     * @var null|Address
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Address")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $address;
+    #[ORM\ManyToOne(targetEntity: \App\Entity\Address::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?\App\Entity\Address $address = null;
 
-    /**
-     * @var null|DateTime
-     *
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private $eventTime;
 
     public function getId(): ?int

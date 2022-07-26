@@ -6,59 +6,27 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * API Key to allow for querying and writing to our tables.
- *
- * @ORM\Table(
- *     name="apikeys",
- *     uniqueConstraints={
- *        @ORM\UniqueConstraint(
- *            name="key",
- *            columns={"apikey"}
- *        )
- *     },
- *     indexes={
- *         @ORM\Index(
- *             name="active",
- *             columns={"active"}
- *         ),
- *         @ORM\Index(
- *             name="owner",
- *             columns={"owner"}
- *         )
- *     }
- * )
- * @ORM\Entity(repositoryClass="App\Repository\APIKeyRepository")
  */
+#[ORM\Table(name: 'apikeys')]
+#[ORM\UniqueConstraint(name: 'key', columns: ['apikey'])]
+#[ORM\Index(name: 'active', columns: ['active'])]
+#[ORM\Index(name: 'owner', columns: ['owner'])]
+#[ORM\Entity(repositoryClass: \App\Repository\APIKeyRepository::class)]
 class APIKey
 {
-    /**
-     * @var int
-     *
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue()
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue]
+    private readonly int $id;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", length=40, nullable=false)
-     */
-    private $key;
+    #[ORM\Column(type: 'string', length: 40, nullable: false)]
+    private ?string $key = null;
 
-    /**
-     * @var bool
-     *
-     * @ORM\Column(type="boolean", nullable=false)
-     */
-    private $active;
+    #[ORM\Column(type: 'boolean', nullable: false)]
+    private ?bool $active = null;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(type="integer", nullable=false, options={"unsigned"=true})
-     */
-    private $owner;
+    #[ORM\Column(type: 'integer', nullable: false, options: ['unsigned' => true])]
+    private ?int $owner = null;
 
     public function getId(): ?int
     {

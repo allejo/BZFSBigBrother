@@ -14,25 +14,20 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/api")
- */
+#[Route(path: '/api')]
 class ApiController extends AbstractController
 {
-    public const QUERY_IP = 1;
+    final public const QUERY_IP = 1;
 
-    public const QUERY_CMD = 2;
+    final public const QUERY_CMD = 2;
 
-    public const QUERY_CALLSIGN = 3;
+    final public const QUERY_CALLSIGN = 3;
 
-    /**
-     * @Route("/query", name="api_query")
-     */
+    #[Route(path: '/query', name: 'api_query')]
     public function query(Request $request, PlayerJoinRepository $joinRepository): Response
     {
         $query = $request->get('query');
         $action = $this->queryType($query);
-
         if ($action === self::QUERY_IP) {
             $data = $joinRepository->findUniqueJoinsByIP($query);
         } elseif ($action === self::QUERY_CMD) {
@@ -47,26 +42,17 @@ class ApiController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/report-join", name="api_report_join")
-     */
-    public function reportJoin(
-        Request $request,
-        RawLogService $rawLogService,
-        EntityManagerInterface $entityManager,
-        APIKeyRepository $keyRepository,
-        RawLogRepository $rawLogRepository
-    ): Response {
+    #[Route(path: '/report-join', name: 'api_report_join')]
+    public function reportJoin(Request $request, RawLogService $rawLogService, EntityManagerInterface $entityManager, APIKeyRepository $keyRepository, RawLogRepository $rawLogRepository): Response
+    {
         $apiKeyRaw = $request->get('apikey');
         $apiKey = $keyRepository->findOneBy([
             'active' => true,
             'key' => $apiKeyRaw,
         ]);
-
         if ($apiKey === null) {
             throw $this->createAccessDeniedException(sprintf('Invalid API key could not be found: %s', $apiKeyRaw));
         }
-
         $entry = new RawLog();
         $entry->setCallsign($request->get('callsign'));
         $entry->setBzid($request->get('bzid'));
@@ -74,7 +60,6 @@ class ApiController extends AbstractController
         $entry->setHostname($request->get('hostname'));
         $entry->setApikey($apiKey);
         $entry->setBuild($request->get('build'));
-
         $rawLogRepository->add($entry);
         $rawLogService->updatePlayerData($entry);
         $entityManager->flush();

@@ -12,20 +12,8 @@ use App\Repository\PlayerJoinRepository;
 
 class RawLogService
 {
-    /** @var AddressRepository */
-    private $addressRepository;
-
-    /** @var CallsignRepository */
-    private $callsignRepository;
-
-    /** @var PlayerJoinRepository */
-    private $playerJoinRepository;
-
-    public function __construct(AddressRepository $addressRepository, CallsignRepository $callsignRepository, PlayerJoinRepository $playerJoinRepository)
+    public function __construct(private readonly AddressRepository $addressRepository, private readonly CallsignRepository $callsignRepository, private readonly PlayerJoinRepository $playerJoinRepository)
     {
-        $this->addressRepository = $addressRepository;
-        $this->callsignRepository = $callsignRepository;
-        $this->playerJoinRepository = $playerJoinRepository;
     }
 
     public function updatePlayerData(RawLog $rawLog): bool

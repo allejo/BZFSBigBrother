@@ -2,82 +2,40 @@
 
 namespace App\Entity;
 
-use DateTime;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Table(
- *     name="rawlog",
- *     indexes={
- *         @ORM\Index(
- *             name="apikey",
- *             columns={"apikey"}
- *         )
- *     }
- * )
- * @ORM\Entity(repositoryClass="App\Repository\RawLogRepository")
- */
+#[ORM\Table(name: 'rawlog')]
+#[ORM\Index(name: 'apikey', columns: ['apikey'])]
+#[ORM\Entity(repositoryClass: \App\Repository\RawLogRepository::class)]
 class RawLog
 {
-    /**
-     * @var int
-     *
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue()
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue]
+    private readonly int $id;
 
-    /**
-     * @var null|string
-     *
-     * @ORM\Column(type="string", length=32, nullable=true)
-     */
-    private $callsign;
+    #[ORM\Column(type: 'string', length: 32, nullable: true)]
+    private ?string $callsign = null;
 
-    /**
-     * @var null|string
-     *
-     * @ORM\Column(type="string", length=32, nullable=true)
-     */
-    private $bzid;
+    #[ORM\Column(type: 'string', length: 32, nullable: true)]
+    private ?string $bzid = null;
 
-    /**
-     * @var null|string
-     *
-     * @ORM\Column(type="string", length=15, nullable=true)
-     */
-    private $ipAddress;
+    #[ORM\Column(type: 'string', length: 15, nullable: true)]
+    private ?string $ipAddress = null;
 
-    /**
-     * @var null|string
-     *
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $hostname;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $hostname = null;
 
-    /**
-     * @var APIKey
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\APIKey")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $apikey;
+    #[ORM\ManyToOne(targetEntity: \App\Entity\APIKey::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?\App\Entity\APIKey $apikey = null;
 
-    /**
-     * @var null|DateTime
-     *
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private $eventTime;
 
-    /**
-     * @var null|string
-     *
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $build;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $build = null;
 
     public function getId(): ?int
     {

@@ -4,35 +4,18 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Table(
- *     name="callsigns",
- *     uniqueConstraints={
- *         @ORM\UniqueConstraint(
- *             name="callsign_UNIQUE",
- *             columns={"callsign"}
- *         )
- *     }
- * )
- * @ORM\Entity(repositoryClass="App\Repository\CallsignRepository")
- */
+#[ORM\Table(name: 'callsigns')]
+#[ORM\UniqueConstraint(name: 'callsign_UNIQUE', columns: ['callsign'])]
+#[ORM\Entity(repositoryClass: \App\Repository\CallsignRepository::class)]
 class Callsign
 {
-    /**
-     * @var int
-     *
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue()
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue]
+    private readonly int $id;
 
-    /**
-     * @var null|string
-     *
-     * @ORM\Column(type="string", length=32, nullable=true)
-     */
-    private $callsign;
+    #[ORM\Column(type: 'string', length: 32, nullable: true)]
+    private ?string $callsign = null;
 
     public function getId(): ?int
     {
