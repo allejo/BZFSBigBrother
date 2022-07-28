@@ -1,0 +1,12 @@
+/container-src
+/node_modules
+/public/build
+/var
+/vendor
+/vendor-bin
+
+Dockerfile
+*.Dockerfile
+Makefile
+
+!/container-src/*

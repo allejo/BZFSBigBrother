@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "declaration": false,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "noEmit": false,
+    "strict": true,
+    "target": "ES2017"
+  },
+  "exclude": ["node_modules", "vendor"]
+}

@@ -1,0 +1,36 @@
+{
+  "private": true,
+  "license": "UNLICENSED",
+  "scripts": {
+    "build": "encore production --progress",
+    "dev": "encore dev",
+    "dev-server": "encore dev-server",
+    "prettify": "concurrently -s all \"npm:prettify:*\"",
+    "prettify:code": "prettier --list-different --write .",
+    "prettify:package-json": "prettier-package-json --expand-users --write ./package.json",
+    "prettify:php": "composer format",
+    "watch": "encore dev --watch"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.1.1",
+    "@hotwired/stimulus": "^3.0.0",
+    "@symfony/stimulus-bridge": "^3.2.0",
+    "@symfony/webpack-encore": "^3.0.0",
+    "concurrently": "^7.0.0",
+    "core-js": "^3.23.0",
+    "regenerator-runtime": "^0.13.9",
+    "sass": "^1.45.0",
+    "sass-loader": "^12.4.0",
+    "ts-loader": "^9.2.6",
+    "typescript": "^4.5.4",
+    "webpack-notifier": "^1.15.0"
+  },
+  "devDependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^3.1.1",
+    "prettier": "^2.1.1",
+    "prettier-check": "^2.0.0",
+    "prettier-package-json": "^2.1.3",
+    "prettier-plugin-twig-enhancements": "^1.0.1",
+    "prettier-plugin-twig-melody": "^0.4.6"
+  }
+}
