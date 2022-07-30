@@ -85,3 +85,67 @@ RUN a2enmod rewrite
 # Copy Symfony source
 COPY --from=scratch_dependency_image /var/www/big-brother/ /var/www/big-brother/
 WORKDIR /var/www/big-brother/
+
+#
+# The development version of our Docker image
+#
+
+FROM base_image as development
+
+LABEL name="BZFS Big Brother (DEV)"
+
+# Install Node.js/npm & dependencies for being able to run Composer
+RUN curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION} | bash -
+RUN apt-get update && apt-get install -y \
+      apt-utils \
+      git \
+      libpq-dev \
+      nodejs \
+      vim \
+      wget \
+      zip
+
+# Install Composer (https://getcomposer.org/)
+COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
+
+# Install Xdebug and configure it to automatically attempt to attach itself to
+# port 9000 of the Docker host machine
+RUN pickle install xdebug --defaults \
+    && docker-php-ext-enable xdebug \
+    && echo '\
+        xdebug.mode=debug\n\
+        xdebug.client_host=host.docker.internal\n\
+        xdebug.client_port=9000\n\
+        xdebug.discover_client_host=true\n\
+        xdebug.start_with_request=trigger\n\
+    ' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+
+RUN echo '\
+    # Helper functions for enabling/disabling Xdebug in the CLI\n\
+    enableDebug() {\n\
+      export XDEBUG_MODE=debug\n\
+      export XDEBUG_SESSION=1\n\
+      export COMPOSER_ALLOW_XDEBUG=1\n\
+    }\n\
+    disableDebug() {\n\
+      unset XDEBUG_MODE\n\
+      unset XDEBUG_SESSION\n\
+      unset COMPOSER_ALLOW_XDEBUG\n\
+    }\n\
+    ' >> /root/.bashrc
+
+ENTRYPOINT ["apache2-foreground"]
+
+#
+# The production version of our Docker image
+#
+
+FROM base_image as production
+
+LABEL name="BZFS Big Brother"
+LABEL description="A web application to store and track information about players and their connections"
+
+RUN useradd -m -u 1001 BigBrotherUser
+USER BigBrotherUser
+
+ENTRYPOINT ["apache2-foreground"]

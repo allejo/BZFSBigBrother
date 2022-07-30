@@ -1,6 +1,4 @@
 .php-cs-fixer.cache
-Dockerfile
-Dockerfile.bak
 
 vendor-bin/**/vendor/
 
