@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Tests\Service;
 
@@ -14,6 +14,10 @@ use App\Service\RawLogService;
 use DateTime;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ * @covers \App\Service\RawLogService
+ */
 class RawLogServiceTest extends TestCase
 {
     public function testUpdatePlayerDataWithNoExistingAddressOrCallsign(): void
@@ -22,8 +26,10 @@ class RawLogServiceTest extends TestCase
 
         /** @var Address[] $addresses */
         $addresses = [];
+
         /** @var Callsign[] $callsigns */
         $callsigns = [];
+
         /** @var PlayerJoin[] $joins */
         $joins = [];
 
@@ -56,8 +62,10 @@ class RawLogServiceTest extends TestCase
                 ->setIpAddress($rawLogEntry->getIpAddress())
                 ->setHostname($rawLogEntry->getHostname()),
         ];
+
         /** @var Callsign[] $callsigns */
         $callsigns = [];
+
         /** @var PlayerJoin[] $joins */
         $joins = [];
 
@@ -84,7 +92,7 @@ class RawLogServiceTest extends TestCase
         $rawLogEntry->setEventTime(new DateTime());
 
         foreach ($options as $key => $value) {
-            $fxn = "set" . ucfirst($key);
+            $fxn = 'set' . ucfirst($key);
             $rawLogEntry->{$fxn}($value);
         }
 
@@ -95,9 +103,6 @@ class RawLogServiceTest extends TestCase
      * @template T
      *
      * @param class-string<T> $class
-     * @param array           $storage
-     * @param bool            $hasFindOneBy
-     * @param bool            $hasAdd
      *
      * @return T
      */
@@ -108,7 +113,8 @@ class RawLogServiceTest extends TestCase
         if ($hasFindOneBy) {
             $repository
                 ->method('findOneBy')
-                ->willReturn($storage[0] ?? null);
+                ->willReturn($storage[0] ?? null)
+            ;
         }
 
         if ($hasAdd) {
@@ -116,7 +122,8 @@ class RawLogServiceTest extends TestCase
                 ->method('add')
                 ->willReturnCallback(static function ($entity) use (&$storage) {
                     $storage[] = $entity;
-                });
+                })
+            ;
         }
 
         return $repository;

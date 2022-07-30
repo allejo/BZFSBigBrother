@@ -4,6 +4,7 @@ $finder = PhpCsFixer\Finder::create()
     ->in('migrations')
     ->in('public')
     ->in('src')
+    ->in('tests')
 ;
 
 $config = new PhpCsFixer\Config();
