@@ -28,6 +28,7 @@ class ApiController extends AbstractController
     {
         $query = $request->get('query');
         $action = $this->queryType($query);
+
         if ($action === self::QUERY_IP) {
             $data = $joinRepository->findUniqueJoinsByIP($query);
         } elseif ($action === self::QUERY_CMD) {
@@ -50,9 +51,11 @@ class ApiController extends AbstractController
             'active' => true,
             'key' => $apiKeyRaw,
         ]);
+
         if ($apiKey === null) {
             throw $this->createAccessDeniedException(sprintf('Invalid API key could not be found: %s', $apiKeyRaw));
         }
+
         $entry = new RawLog();
         $entry->setCallsign($request->get('callsign'));
         $entry->setBzid($request->get('bzid'));
@@ -60,6 +63,7 @@ class ApiController extends AbstractController
         $entry->setHostname($request->get('hostname'));
         $entry->setApikey($apiKey);
         $entry->setBuild($request->get('build'));
+
         $rawLogRepository->add($entry);
         $rawLogService->updatePlayerData($entry);
         $entityManager->flush();
