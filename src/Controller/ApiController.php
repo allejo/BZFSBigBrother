@@ -73,7 +73,7 @@ class ApiController extends AbstractController
         ], new PlainTextResponse());
     }
 
-    public function queryType(string $query): int
+    private function queryType(string $query): int
     {
         if ($query[0] === '/') {
             return self::QUERY_CMD;
@@ -86,7 +86,7 @@ class ApiController extends AbstractController
         return self::QUERY_CALLSIGN;
     }
 
-    public function commandHandler(string $query): array
+    private function commandHandler(string $query): array
     {
         [$command, $body] = explode(' ', substr($query, 1));
 

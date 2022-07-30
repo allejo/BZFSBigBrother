@@ -80,6 +80,39 @@ class RawLogServiceTest extends TestCase
         $this->assertEquals($addresses[0], $joins[0]->getAddress());
     }
 
+    public function testUpdatePlayerDataWithExistingAddressAndCallsign(): void
+    {
+        $rawLogEntry = $this->createMockRawLog([]);
+
+        /** @var Address[] $addresses */
+        $addresses = [
+            (new Address())
+                ->setIpAddress($rawLogEntry->getIpAddress())
+                ->setHostname($rawLogEntry->getHostname()),
+        ];
+
+        /** @var Callsign[] $callsigns */
+        $callsigns = [
+            (new Callsign())
+                ->setCallsign($rawLogEntry->getCallsign()),
+        ];
+
+        /** @var PlayerJoin[] $joins */
+        $joins = [];
+
+        $addressRepo = $this->createMockRepository(AddressRepository::class, $addresses, hasFindOneBy: true);
+        $callsignRepo = $this->createMockRepository(CallsignRepository::class, $callsigns, hasFindOneBy: true);
+        $joinRepo = $this->createMockRepository(PlayerJoinRepository::class, $joins, hasAdd: true);
+
+        $service = new RawLogService($addressRepo, $callsignRepo, $joinRepo);
+        $service->updatePlayerData($rawLogEntry);
+
+        $this->assertCount(1, $addresses);
+        $this->assertCount(1, $callsigns);
+        $this->assertEquals($addresses[0], $joins[0]->getAddress());
+        $this->assertEquals($callsigns[0], $joins[0]->getCallsign());
+    }
+
     private function createMockRawLog(array $options): RawLog
     {
         $rawLogEntry = new RawLog();
