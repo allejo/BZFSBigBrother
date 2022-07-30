@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\APIKey;
 use App\Entity\RawLog;
 use App\Repository\APIKeyRepository;
 use App\Repository\PlayerJoinRepository;
@@ -46,15 +47,7 @@ class ApiController extends AbstractController
     #[Route(path: '/report-join', name: 'api_report_join')]
     public function reportJoin(Request $request, RawLogService $rawLogService, EntityManagerInterface $entityManager, APIKeyRepository $keyRepository, RawLogRepository $rawLogRepository): Response
     {
-        $apiKeyRaw = $request->get('apikey');
-        $apiKey = $keyRepository->findOneBy([
-            'active' => true,
-            'key' => $apiKeyRaw,
-        ]);
-
-        if ($apiKey === null) {
-            throw $this->createAccessDeniedException(sprintf('Invalid API key could not be found: %s', $apiKeyRaw));
-        }
+        $apiKey = $request->attributes->get('apikey');
 
         $entry = new RawLog();
         $entry->setCallsign($request->get('callsign'));
