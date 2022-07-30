@@ -18,58 +18,18 @@ class RawLogServiceTest extends TestCase
 {
     public function testUpdatePlayerDataWithNoExistingAddressOrCallsign(): void
     {
-        $rawLogEntry = new RawLog();
-        $rawLogEntry->setCallsign('allejo');
-        $rawLogEntry->setHostname('home-network.local');
-        $rawLogEntry->setIpAddress('192.168.1.2');
-        $rawLogEntry->setApikey($this->createMock(APIKey::class));
-        $rawLogEntry->setBzid('12345');
-        $rawLogEntry->setBuild('BZFlag-2.4.22-macOS');
-        $rawLogEntry->setEventTime(new DateTime());
+        $rawLogEntry = $this->createMockRawLog([]);
 
         /** @var Address[] $addresses */
         $addresses = [];
-        $addressRepo = $this->createMock(AddressRepository::class);
-        $addressRepo
-            ->method('findOneBy')
-            ->willReturn(null);
-        $addressRepo
-            ->method('add')
-            ->willReturnCallback(static function() use ($rawLogEntry, &$addresses) {
-                $address = new Address();
-                $address->setIpAddress($rawLogEntry->getIpAddress());
-                $address->setHostname($rawLogEntry->getHostname());
-
-                $addresses[] = $address;
-            });
-
         /** @var Callsign[] $callsigns */
         $callsigns = [];
-        $callsignRepo = $this->createMock(CallsignRepository::class);
-        $callsignRepo
-            ->method('findOneBy')
-            ->willReturn(null);
-        $callsignRepo
-            ->method('add')
-            ->willReturnCallback(static function () use ($rawLogEntry, &$callsigns) {
-                $callsign = new Callsign();
-                $callsign->setCallsign($rawLogEntry->getCallsign());
-
-                $callsigns[] = $callsign;
-            });
-
         /** @var PlayerJoin[] $joins */
         $joins = [];
-        $joinRepo = $this->createMock(PlayerJoinRepository::class);
-        $joinRepo
-            ->method('add')
-            ->willReturnCallback(static function () use (&$addresses, &$callsigns, &$joins) {
-                $join = new PlayerJoin();
-                $join->setAddress($addresses[0]);
-                $join->setCallsign($callsigns[0]);
 
-                $joins[] = $join;
-            });
+        $addressRepo = $this->createMockRepository(AddressRepository::class, $addresses, hasAdd: true);
+        $callsignRepo = $this->createMockRepository(CallsignRepository::class, $callsigns, hasAdd: true);
+        $joinRepo = $this->createMockRepository(PlayerJoinRepository::class, $joins, hasAdd: true);
 
         $service = new RawLogService($addressRepo, $callsignRepo, $joinRepo);
         $service->updatePlayerData($rawLogEntry);
@@ -81,5 +41,84 @@ class RawLogServiceTest extends TestCase
         $this->assertEquals($rawLogEntry->getIpAddress(), $joins[0]->getAddress()->getIpAddress());
         $this->assertEquals($rawLogEntry->getHostname(), $joins[0]->getAddress()->getHostname());
         $this->assertEquals($rawLogEntry->getCallsign(), $joins[0]->getCallsign()->getCallsign());
+    }
+
+    public function testUpdatePlayerDataWithExistingAddressOnly(): void
+    {
+        $rawLogEntry = $this->createMockRawLog([
+            'callsign' => 'not allejo',
+            'bzid' => null,
+        ]);
+
+        /** @var Address[] $addresses */
+        $addresses = [
+            (new Address())
+                ->setIpAddress($rawLogEntry->getIpAddress())
+                ->setHostname($rawLogEntry->getHostname()),
+        ];
+        /** @var Callsign[] $callsigns */
+        $callsigns = [];
+        /** @var PlayerJoin[] $joins */
+        $joins = [];
+
+        $addressRepo = $this->createMockRepository(AddressRepository::class, $addresses, hasFindOneBy: true);
+        $callsignRepo = $this->createMockRepository(CallsignRepository::class, $callsigns, hasAdd: true);
+        $joinRepo = $this->createMockRepository(PlayerJoinRepository::class, $joins, hasAdd: true);
+
+        $service = new RawLogService($addressRepo, $callsignRepo, $joinRepo);
+        $service->updatePlayerData($rawLogEntry);
+
+        $this->assertCount(1, $addresses);
+        $this->assertEquals($addresses[0], $joins[0]->getAddress());
+    }
+
+    private function createMockRawLog(array $options): RawLog
+    {
+        $rawLogEntry = new RawLog();
+        $rawLogEntry->setCallsign('allejo');
+        $rawLogEntry->setHostname('home-network.local');
+        $rawLogEntry->setIpAddress('192.168.1.2');
+        $rawLogEntry->setApikey($this->createMock(APIKey::class));
+        $rawLogEntry->setBzid('12345');
+        $rawLogEntry->setBuild('BZFlag-2.4.22-macOS');
+        $rawLogEntry->setEventTime(new DateTime());
+
+        foreach ($options as $key => $value) {
+            $fxn = "set" . ucfirst($key);
+            $rawLogEntry->{$fxn}($value);
+        }
+
+        return $rawLogEntry;
+    }
+
+    /**
+     * @template T
+     *
+     * @param class-string<T> $class
+     * @param array           $storage
+     * @param bool            $hasFindOneBy
+     * @param bool            $hasAdd
+     *
+     * @return T
+     */
+    private function createMockRepository(string $class, array &$storage, bool $hasFindOneBy = false, bool $hasAdd = false)
+    {
+        $repository = $this->createMock($class);
+
+        if ($hasFindOneBy) {
+            $repository
+                ->method('findOneBy')
+                ->willReturn($storage[0] ?? null);
+        }
+
+        if ($hasAdd) {
+            $repository
+                ->method('add')
+                ->willReturnCallback(static function ($entity) use (&$storage) {
+                    $storage[] = $entity;
+                });
+        }
+
+        return $repository;
     }
 }
