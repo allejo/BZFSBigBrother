@@ -2,16 +2,17 @@
 
 namespace App\Entity;
 
+use App\Repository\APIKeyRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * API Key to allow for querying and writing to our tables.
  */
 #[ORM\Table(name: 'apikeys')]
-#[ORM\UniqueConstraint(name: 'key', columns: ['apikey'])]
+#[ORM\UniqueConstraint(name: 'key', columns: ['key'])]
 #[ORM\Index(name: 'active', columns: ['active'])]
 #[ORM\Index(name: 'owner', columns: ['owner'])]
-#[ORM\Entity(repositoryClass: \App\Repository\APIKeyRepository::class)]
+#[ORM\Entity(repositoryClass: APIKeyRepository::class)]
 class APIKey
 {
     #[ORM\Id]

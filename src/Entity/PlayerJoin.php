@@ -2,12 +2,13 @@
 
 namespace App\Entity;
 
+use App\Repository\PlayerJoinRepository;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Table(name: 'joins')]
-#[ORM\Index(name: 'when_INDEX', columns: ['eventtime'])]
-#[ORM\Entity(repositoryClass: \App\Repository\PlayerJoinRepository::class)]
+#[ORM\Index(name: 'when_INDEX', columns: ['event_time'])]
+#[ORM\Entity(repositoryClass: PlayerJoinRepository::class)]
 class PlayerJoin
 {
     #[ORM\Id]

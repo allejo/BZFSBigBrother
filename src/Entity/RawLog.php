@@ -2,12 +2,13 @@
 
 namespace App\Entity;
 
+use App\Repository\RawLogRepository;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Table(name: 'rawlog')]
-#[ORM\Index(name: 'apikey', columns: ['apikey'])]
-#[ORM\Entity(repositoryClass: \App\Repository\RawLogRepository::class)]
+#[ORM\Index(name: 'apikey', columns: ['apikey_id'])]
+#[ORM\Entity(repositoryClass: RawLogRepository::class)]
 class RawLog
 {
     #[ORM\Id]
@@ -27,12 +28,12 @@ class RawLog
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $hostname = null;
 
-    #[ORM\ManyToOne(targetEntity: \App\Entity\APIKey::class)]
+    #[ORM\ManyToOne(targetEntity: APIKey::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private ?\App\Entity\APIKey $apikey = null;
+    private ?APIKey $apikey = null;
 
     #[ORM\Column(type: 'datetime', nullable: true)]
-    private $eventTime;
+    private ?DateTimeInterface $eventTime;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $build = null;

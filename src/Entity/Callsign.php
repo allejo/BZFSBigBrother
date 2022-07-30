@@ -2,11 +2,12 @@
 
 namespace App\Entity;
 
+use App\Repository\CallsignRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Table(name: 'callsigns')]
 #[ORM\UniqueConstraint(name: 'callsign_UNIQUE', columns: ['callsign'])]
-#[ORM\Entity(repositoryClass: \App\Repository\CallsignRepository::class)]
+#[ORM\Entity(repositoryClass: CallsignRepository::class)]
 class Callsign
 {
     #[ORM\Id]
