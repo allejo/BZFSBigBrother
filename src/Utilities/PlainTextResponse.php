@@ -8,8 +8,8 @@ class PlainTextResponse extends Response
 {
     public function __construct(?string $content = '', int $status = 200, array $headers = [])
     {
-        $headers['content-type'] = 'text/plain';
-
         parent::__construct($content, $status, $headers);
+
+        $this->headers->set('Content-Type', 'text/plain');
     }
 }

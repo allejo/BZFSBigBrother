@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\EventSubscriber;
 
@@ -7,6 +7,7 @@ use App\Entity\APIKey;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 
@@ -42,10 +43,16 @@ class ApiKeySubscriber implements EventSubscriberInterface
         }
     }
 
+    public function onKernelResponse(ResponseEvent $event): void
+    {
+        $event->getResponse()->headers->set('Content-Type', 'text/plain');
+    }
+
     public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::CONTROLLER => 'onKernelController',
+            KernelEvents::RESPONSE => 'onKernelResponse',
         ];
     }
 }

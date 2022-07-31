@@ -2,13 +2,11 @@
 
 namespace App\Controller;
 
-use App\Entity\APIKey;
 use App\Entity\RawLog;
 use App\Repository\APIKeyRepository;
 use App\Repository\PlayerJoinRepository;
 use App\Repository\RawLogRepository;
 use App\Service\RawLogService;
-use App\Utilities\PlainTextResponse;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,6 +39,7 @@ class ApiController extends AbstractController
         return $this->render('api/query.txt.twig', [
             'type' => $action,
             'data' => $data,
+            'query' => $query,
         ]);
     }
 
@@ -63,7 +62,7 @@ class ApiController extends AbstractController
 
         return $this->render('api/report-join.txt.twig', [
             'log' => $entry,
-        ], new PlainTextResponse());
+        ]);
     }
 
     private function queryType(string $query): int
