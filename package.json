@@ -5,10 +5,10 @@
     "build": "encore production --progress",
     "dev": "encore dev",
     "dev-server": "encore dev-server",
-    "prettify": "concurrently -s all \"npm:prettify:*\"",
-    "prettify:code": "prettier --list-different --write .",
-    "prettify:package-json": "prettier-package-json --expand-users --write ./package.json",
-    "prettify:php": "composer format",
+    "format": "concurrently -s all \"npm:format:*\"",
+    "format:code": "prettier --list-different --write .",
+    "format:package-json": "prettier-package-json --expand-users --write ./package.json",
+    "format:php": "composer format",
     "watch": "encore dev --watch"
   },
   "dependencies": {

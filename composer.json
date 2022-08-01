@@ -87,9 +87,11 @@
       "@auto-scripts"
     ],
     "format": [
-      "php-cs-fixer fix -v"
+      "php-cs-fixer fix $(if [ ! -z $CI ]; then echo \"--format=checkstyle\"; fi)"
     ],
-    "stan": "phpstan analyse -c phpstan.neon.dist $(if [ ! -z $CI ]; then echo \"--error-format=checkstyle\"; fi)"
+    "stan": [
+      "phpstan analyse -c phpstan.neon.dist $(if [ ! -z $CI ]; then echo \"--error-format=checkstyle\"; fi)"
+    ]
   },
   "conflict": {
     "symfony/symfony": "*"

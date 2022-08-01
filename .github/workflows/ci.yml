@@ -33,7 +33,7 @@ jobs:
               run: composer install --prefer-dist --no-progress --no-suggest
 
             - name: Run php-cs-fixer
-              run: composer fix | cs2pr
+              run: composer format | cs2pr
 
             - name: Check differences
               run: git diff --exit-code
@@ -97,9 +97,6 @@ jobs:
 
             - name: Setup Problem Matchers for PHPUnit
               run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
-
-            - name: Validate composer.json and composer.lock
-              run: composer validate
 
             - name: Get Composer Cache Directory
               id: composer-cache
