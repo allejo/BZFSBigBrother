@@ -13,7 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
  * @internal
- * @coversNothing
+ * @covers \App\Controller\ApiController
  */
 class ApiControllerTest extends WebTestCase
 {
