@@ -39,6 +39,9 @@ class PlayerJoinRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * @return array<int, array{callsign: string, ipAddress: string, hostname: string, times: int}>
+     */
     public function findUniqueJoinsByIP(string $ipAddress, int $daysBack = 180): array
     {
         return $this->createQueryBuilder('j')
@@ -58,10 +61,13 @@ class PlayerJoinRepository extends ServiceEntityRepository
         ;
     }
 
+    /**
+     * @return array<int, array{ipAddress: string}>
+     */
     public function findUniqueIPsByCallsign(string $callsign, int $daysBack = 180): array
     {
         return $this->createQueryBuilder('j')
-            ->select('a.ip_address')
+            ->select('a.ipAddress')
             ->distinct()
             ->join('j.address', 'a')
             ->join('j.callsign', 'c')

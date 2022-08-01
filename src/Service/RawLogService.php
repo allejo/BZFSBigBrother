@@ -9,6 +9,7 @@ use App\Entity\RawLog;
 use App\Repository\AddressRepository;
 use App\Repository\CallsignRepository;
 use App\Repository\PlayerJoinRepository;
+use Webmozart\Assert\Assert;
 
 class RawLogService
 {
@@ -18,6 +19,10 @@ class RawLogService
 
     public function updatePlayerData(RawLog $rawLog): bool
     {
+        Assert::notNull($rawLog->getIpAddress());
+        Assert::notNull($rawLog->getHostname());
+        Assert::notNull($rawLog->getCallsign());
+
         $address = $this->getAddress($rawLog->getIpAddress(), $rawLog->getHostname());
         $callsign = $this->getCallsign($rawLog->getCallsign());
 

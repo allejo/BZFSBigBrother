@@ -78,6 +78,9 @@ class ApiController extends AbstractController
         return self::QUERY_CALLSIGN;
     }
 
+    /**
+     * @return array<number, string>
+     */
     private function commandHandler(string $query): array
     {
         [$command, $body] = explode(' ', substr($query, 1));

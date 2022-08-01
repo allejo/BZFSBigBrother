@@ -12,6 +12,7 @@ use App\Repository\CallsignRepository;
 use App\Repository\PlayerJoinRepository;
 use App\Service\RawLogService;
 use DateTime;
+use Doctrine\ORM\EntityRepository;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -113,6 +114,9 @@ class RawLogServiceTest extends TestCase
         $this->assertEquals($callsigns[0], $joins[0]->getCallsign());
     }
 
+    /**
+     * @param array<string, mixed> $options
+     */
     private function createMockRawLog(array $options): RawLog
     {
         $rawLogEntry = new RawLog();
@@ -133,9 +137,11 @@ class RawLogServiceTest extends TestCase
     }
 
     /**
-     * @template T
+     * @template T of EntityRepository
+     * @template V of object
      *
-     * @param class-string<T> $class
+     * @param class-string<T>  $class
+     * @param array<number, V> $storage
      *
      * @return T
      */

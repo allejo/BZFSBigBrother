@@ -16,16 +16,16 @@ class PlayerJoin
     #[ORM\GeneratedValue]
     private readonly int $id;
 
-    #[ORM\ManyToOne(targetEntity: \App\Entity\Callsign::class)]
+    #[ORM\ManyToOne(targetEntity: Callsign::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private ?\App\Entity\Callsign $callsign = null;
+    private ?Callsign $callsign = null;
 
-    #[ORM\ManyToOne(targetEntity: \App\Entity\Address::class)]
+    #[ORM\ManyToOne(targetEntity: Address::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private ?\App\Entity\Address $address = null;
+    private ?Address $address = null;
 
     #[ORM\Column(type: 'datetime', nullable: true)]
-    private $eventTime;
+    private ?DateTimeInterface $eventTime;
 
     public function getId(): ?int
     {

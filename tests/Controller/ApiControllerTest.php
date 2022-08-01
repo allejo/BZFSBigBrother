@@ -26,11 +26,7 @@ class ApiControllerTest extends WebTestCase
     protected function setUp(): void
     {
         $this->client = self::createClient();
-        $this->em = self::$kernel->getContainer()
-            ->get('doctrine')
-            ->getManager()
-        ;
-
+        $this->setEntityManager(self::$kernel->getContainer());
         $this->truncateEntities([
             Address::class,
             APIKey::class,
@@ -65,7 +61,7 @@ class ApiControllerTest extends WebTestCase
 
         self::assertResponseIsSuccessful();
 
-        $response = $this->client->getResponse()->getContent();
+        $response = $this->client->getResponse()->getContent() ?: '';
         self::assertEquals(
             <<<'RES'
             Results of IP address lookup for 127.0.0.1:
@@ -88,7 +84,7 @@ class ApiControllerTest extends WebTestCase
 
         self::assertResponseIsSuccessful();
 
-        $response = $this->client->getResponse()->getContent();
+        $response = $this->client->getResponse()->getContent() ?: '';
         self::assertEquals(
             <<<'RES'
             Results of IP address lookup for 127.0.0.1:

@@ -6,10 +6,14 @@ use App\Entity\Address;
 use App\Entity\Callsign;
 use App\Entity\PlayerJoin;
 use App\Entity\RawLog;
+use App\Repository\AddressRepository;
+use App\Repository\CallsignRepository;
+use App\Repository\PlayerJoinRepository;
 use App\Service\RawLogService;
 use DateTime;
 use Doctrine\DBAL\Exception as DoctrineException;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Container\ContainerInterface;
 
 trait FunctionalTestsTrait
 {
@@ -20,8 +24,13 @@ trait FunctionalTestsTrait
         static $service;
 
         if ($service === null) {
+            /** @var AddressRepository $addressRepo */
             $addressRepo = $this->em->getRepository(Address::class);
+
+            /** @var CallsignRepository $callsignRepo */
             $callsignRepo = $this->em->getRepository(Callsign::class);
+
+            /** @var PlayerJoinRepository $joinRepo */
             $joinRepo = $this->em->getRepository(PlayerJoin::class);
 
             $service = new RawLogService($addressRepo, $callsignRepo, $joinRepo);
@@ -44,6 +53,11 @@ trait FunctionalTestsTrait
     protected function getEntityManager(): EntityManagerInterface
     {
         return $this->em;
+    }
+
+    protected function setEntityManager(ContainerInterface $container): void
+    {
+        $this->em = $container->get('doctrine')->getManager(); // @phpstan-ignore-line
     }
 
     /**
