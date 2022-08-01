@@ -2,124 +2,124 @@ name: Continuous Integration
 on: push
 
 jobs:
-  format:
-    name: Formatting
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+    format:
+        name: Formatting
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
 
-      - name: Set up PHP 8.1
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: 8.1
-          tools: cs2pr
+            - name: Set up PHP 8.1
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: 8.1
+                  tools: cs2pr
 
-      - name: Setup Problem Matchers for PHP
-        run: echo "::add-matcher::${{ runner.tool_cache }}/php.json"
+            - name: Setup Problem Matchers for PHP
+              run: echo "::add-matcher::${{ runner.tool_cache }}/php.json"
 
-      - name: Get Composer Cache Directory
-        id: composer-cache
-        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+            - name: Get Composer Cache Directory
+              id: composer-cache
+              run: echo "::set-output name=dir::$(composer config cache-files-dir)"
 
-      - name: Cache dependencies
-        uses: actions/cache@v1
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: ${{ runner.os }}-composer-
+            - name: Cache dependencies
+              uses: actions/cache@v1
+              with:
+                  path: ${{ steps.composer-cache.outputs.dir }}
+                  key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+                  restore-keys: ${{ runner.os }}-composer-
 
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest
+            - name: Install dependencies
+              run: composer install --prefer-dist --no-progress --no-suggest
 
-      - name: Run php-cs-fixer
-        run: composer fix | cs2pr
+            - name: Run php-cs-fixer
+              run: composer fix | cs2pr
 
-      - name: Check differences
-        run: git diff --exit-code
+            - name: Check differences
+              run: git diff --exit-code
 
-  stan:
-    name: PHPStan Analysis
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+    stan:
+        name: PHPStan Analysis
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
 
-      - name: Set up PHP 8.1
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: 8.1
-          tools: cs2pr
+            - name: Set up PHP 8.1
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: 8.1
+                  tools: cs2pr
 
-      - name: Setup Problem Matchers for PHP
-        run: echo "::add-matcher::${{ runner.tool_cache }}/php.json"
+            - name: Setup Problem Matchers for PHP
+              run: echo "::add-matcher::${{ runner.tool_cache }}/php.json"
 
-      - name: Get Composer Cache Directory
-        id: composer-cache
-        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+            - name: Get Composer Cache Directory
+              id: composer-cache
+              run: echo "::set-output name=dir::$(composer config cache-files-dir)"
 
-      - name: Cache dependencies
-        uses: actions/cache@v1
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: ${{ runner.os }}-composer-
+            - name: Cache dependencies
+              uses: actions/cache@v1
+              with:
+                  path: ${{ steps.composer-cache.outputs.dir }}
+                  key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+                  restore-keys: ${{ runner.os }}-composer-
 
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest
+            - name: Install dependencies
+              run: composer install --prefer-dist --no-progress --no-suggest
 
-      - name: Run PHPStan
-        run: composer stan | cs2pr
+            - name: Run PHPStan
+              run: composer stan | cs2pr
 
-  tests:
-    name: PHP ${{ matrix.php-versions }} on ${{ matrix.os }} w/ ${{ matrix.dependencies }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        php-versions: ['8.1']
-        os: [ubuntu-latest]
-        dependencies: ['install']
+    tests:
+        name: PHP ${{ matrix.php-versions }} on ${{ matrix.os }} w/ ${{ matrix.dependencies }}
+        runs-on: ${{ matrix.os }}
+        strategy:
+            fail-fast: false
+            matrix:
+                php-versions: ['8.1']
+                os: [ubuntu-latest]
+                dependencies: ['install']
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
 
-      - name: Set up PHP ${{ matrix.php-versions }}
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php-versions }}
-          extensions: json
-          coverage: xdebug
+            - name: Set up PHP ${{ matrix.php-versions }}
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ matrix.php-versions }}
+                  extensions: json
+                  coverage: xdebug
 
-      - name: Setup Problem Matchers for PHP
-        run: echo "::add-matcher::${{ runner.tool_cache }}/php.json"
+            - name: Setup Problem Matchers for PHP
+              run: echo "::add-matcher::${{ runner.tool_cache }}/php.json"
 
-      - name: Setup Problem Matchers for PHPUnit
-        run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+            - name: Setup Problem Matchers for PHPUnit
+              run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
 
-      - name: Validate composer.json and composer.lock
-        run: composer validate
+            - name: Validate composer.json and composer.lock
+              run: composer validate
 
-      - name: Get Composer Cache Directory
-        id: composer-cache
-        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+            - name: Get Composer Cache Directory
+              id: composer-cache
+              run: echo "::set-output name=dir::$(composer config cache-files-dir)"
 
-      - name: Cache dependencies
-        uses: actions/cache@v1
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: ${{ runner.os }}-composer-
+            - name: Cache dependencies
+              uses: actions/cache@v1
+              with:
+                  path: ${{ steps.composer-cache.outputs.dir }}
+                  key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+                  restore-keys: ${{ runner.os }}-composer-
 
-      - name: Install dependencies
-        run: composer ${{ matrix.dependencies }} --prefer-dist --no-progress --no-suggest --ignore-platform-reqs
+            - name: Install dependencies
+              run: composer ${{ matrix.dependencies }} --prefer-dist --no-progress --no-suggest --ignore-platform-reqs
 
-      - name: Run test suite
-        run: composer test
+            - name: Run test suite
+              run: composer test
 
-      - name: Push to Codecov
-        if: matrix.php-versions == '8.1' && runner.os == 'Linux' && matrix.dependencies == 'install'
-        uses: codecov/codecov-action@v2
-        with:
-            files: ./coverage.xml
+            - name: Push to Codecov
+              if: matrix.php-versions == '8.1' && runner.os == 'Linux' && matrix.dependencies == 'install'
+              uses: codecov/codecov-action@v2
+              with:
+                  files: ./coverage.xml

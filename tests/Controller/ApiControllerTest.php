@@ -69,7 +69,7 @@ class ApiControllerTest extends WebTestCase
         self::assertEquals(
             <<<'RES'
             Results of IP address lookup for 127.0.0.1:
-            No results found
+              No results found
             RES,
             trim($response)
         );
