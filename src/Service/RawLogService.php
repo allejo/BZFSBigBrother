@@ -24,6 +24,7 @@ class RawLogService
         $join = new PlayerJoin();
         $join->setAddress($address);
         $join->setCallsign($callsign);
+        $join->setEventTime($rawLog->getEventTime());
 
         $this->playerJoinRepository->add($join);
 
@@ -35,7 +36,7 @@ class RawLogService
         $existing = $this->addressRepository->findOneBy([
             'ipAddress' => $ipAddress,
             'hostname' => $hostname,
-        ], ['addressid', 'DESC']);
+        ], ['id' => 'DESC']);
 
         if ($existing === null) {
             $entity = new Address();

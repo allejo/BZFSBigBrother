@@ -74,4 +74,28 @@ class ApiControllerTest extends WebTestCase
             trim($response)
         );
     }
+
+    public function testQueryForIPWithTwoCallsigns(): void
+    {
+        $this->addPlayerJoin('allejo', '127.0.0.1');
+        $this->addPlayerJoin('allejo', '127.0.0.1');
+        $this->addPlayerJoin('not allejo', '127.0.0.1');
+
+        $this->client->request('GET', '/api/query', [
+            'apikey' => $this->apiKey->getKey(),
+            'query' => '127.0.0.1',
+        ]);
+
+        self::assertResponseIsSuccessful();
+
+        $response = $this->client->getResponse()->getContent();
+        self::assertEquals(
+            <<<'RES'
+            Results of IP address lookup for 127.0.0.1:
+              allejo (2 times)
+              not allejo (1 times)
+            RES,
+            trim($response)
+        );
+    }
 }

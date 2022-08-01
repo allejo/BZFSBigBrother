@@ -66,7 +66,7 @@ class PlayerJoinRepository extends ServiceEntityRepository
             ->join('j.address', 'a')
             ->join('j.callsign', 'c')
             ->where('c.callsign = :callsign')
-            ->andWhere('j.eventTime > DATE_SUB(NOW(), interval :daysBack day)')
+            ->andWhere("j.eventTime > DATE_SUB(CURRENT_TIMESTAMP(), :daysBack, 'DAY')")
             ->setParameter('callsign', $callsign)
             ->setParameter('daysBack', $daysBack)
             ->getQuery()
