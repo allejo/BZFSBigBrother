@@ -45,8 +45,8 @@ trait FunctionalTestsTrait
         $rawLogEntry->setBuild('BZFlag-2.4.22-macOS');
         $rawLogEntry->setEventTime(new DateTime());
 
-        $service->updatePlayerData($rawLogEntry);
         $this->em->persist($rawLogEntry);
+        $service->updatePlayerData($rawLogEntry);
         $this->em->flush();
     }
 

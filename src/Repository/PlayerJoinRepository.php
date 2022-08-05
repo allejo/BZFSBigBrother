@@ -9,6 +9,8 @@ use Doctrine\Persistence\ManagerRegistry;
 /**
  * @extends ServiceEntityRepository<PlayerJoin>
  *
+ * @phpstan-type JoinRecord array{callsign: string, ipAddress: string, hostname: string, times: int}
+ *
  * @method null|PlayerJoin find($id, $lockMode = null, $lockVersion = null)
  * @method null|PlayerJoin findOneBy(array $criteria, array $orderBy = null)
  * @method PlayerJoin[]    findAll()
@@ -40,7 +42,7 @@ class PlayerJoinRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return array<int, array{callsign: string, ipAddress: string, hostname: string, times: int}>
+     * @return JoinRecord[]
      */
     public function findUniqueJoinsByIP(string $ipAddress, int $daysBack = 180): array
     {
@@ -62,7 +64,7 @@ class PlayerJoinRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return array<int, array{ipAddress: string}>
+     * @return array<string>
      */
     public function findUniqueIPsByCallsign(string $callsign, int $daysBack = 180): array
     {
@@ -76,7 +78,7 @@ class PlayerJoinRepository extends ServiceEntityRepository
             ->setParameter('callsign', $callsign)
             ->setParameter('daysBack', $daysBack)
             ->getQuery()
-            ->getArrayResult()
+            ->getSingleColumnResult()
         ;
     }
 }

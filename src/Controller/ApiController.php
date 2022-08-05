@@ -33,14 +33,10 @@ class ApiController extends AbstractController
         } elseif ($action === self::QUERY_CMD) {
             $data = $this->commandHandler($query);
         } else {
-            $data = $joinRepository->findUniqueIPsByCallsign($query);
+            $data = $this->queryCallsignHandler($query, $joinRepository);
         }
 
-        return $this->render('api/query.txt.twig', [
-            'type' => $action,
-            'data' => $data,
-            'query' => $query,
-        ]);
+        return $this->renderQueryResponse($action, $data, $query);
     }
 
     #[Route(path: '/report-join', name: 'api_report_join')]
@@ -65,6 +61,9 @@ class ApiController extends AbstractController
         ]);
     }
 
+    /**
+     * @return self::QUERY_*
+     */
     private function queryType(string $query): int
     {
         if ($query[0] === '/') {
@@ -76,6 +75,35 @@ class ApiController extends AbstractController
         }
 
         return self::QUERY_CALLSIGN;
+    }
+
+    /**
+     * @phpstan-import-type JoinRecord from PlayerJoinRepository
+     *
+     * @return array<string, JoinRecord[]>
+     */
+    private function queryCallsignHandler(string $query, PlayerJoinRepository $joinRepository): array
+    {
+        $returnData = [];
+        $ipAddresses = $joinRepository->findUniqueIPsByCallsign($query);
+
+        foreach ($ipAddresses as $ipAddress) {
+            $joins = $joinRepository->findUniqueJoinsByIP($ipAddress);
+
+            if (count($joins) === 0) {
+                continue;
+            }
+
+            if (!isset($returnData[$ipAddress])) {
+                $returnData[$ipAddress] = [];
+            }
+
+            foreach ($joins as $join) {
+                $returnData[$ipAddress][] = $join;
+            }
+        }
+
+        return $returnData;
     }
 
     /**
@@ -91,5 +119,43 @@ class ApiController extends AbstractController
         }
 
         return [];
+    }
+
+    private function renderQueryResponse(int $action, array $data, string $query): Response
+    {
+        /** @var string[] $content */
+        $content = [];
+
+        if ($action === self::QUERY_IP) {
+            $content[] = sprintf('Results of IP address lookup for %s:', $query);
+            $rendered = false;
+
+            foreach ($data as $item) {
+                $content[] = sprintf('  %s (%d times)', $item['callsign'], $item['times']);
+                $rendered = true;
+            }
+
+            if (!$rendered) {
+                $content[] = '  No results found';
+            }
+        } elseif ($action === self::QUERY_CALLSIGN) {
+            $content[] = sprintf('Results of callsign lookup for %s:', $query);
+            $rendered = false;
+
+            foreach ($data as $ipAddress => $joins) {
+                $content[] = sprintf('  %s:', $ipAddress);
+                $rendered = true;
+
+                foreach ($joins as $join) {
+                    $content[] = sprintf('    %s (%d times)', $join['callsign'], $join['times']);
+                }
+            }
+
+            if (!$rendered) {
+                $content[] = '  No results found';
+            }
+        }
+
+        return new Response(implode("\n", $content));
     }
 }
