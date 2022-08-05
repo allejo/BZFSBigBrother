@@ -2,11 +2,7 @@
 
 namespace App\Tests\Controller;
 
-use App\Entity\Address;
 use App\Entity\APIKey;
-use App\Entity\Callsign;
-use App\Entity\PlayerJoin;
-use App\Entity\RawLog;
 use App\Tests\FunctionalTestsTrait;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -27,13 +23,7 @@ class ApiControllerTest extends WebTestCase
     {
         $this->client = self::createClient();
         $this->setEntityManager(self::$kernel->getContainer());
-        $this->truncateEntities([
-            Address::class,
-            APIKey::class,
-            Callsign::class,
-            PlayerJoin::class,
-            RawLog::class,
-        ]);
+        $this->truncateEntities();
 
         $this->apiKey = (new APIKey())
             ->setActive(true)

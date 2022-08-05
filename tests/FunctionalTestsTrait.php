@@ -6,12 +6,9 @@ use App\Entity\Address;
 use App\Entity\Callsign;
 use App\Entity\PlayerJoin;
 use App\Entity\RawLog;
-use App\Repository\AddressRepository;
-use App\Repository\CallsignRepository;
-use App\Repository\PlayerJoinRepository;
 use App\Service\RawLogService;
 use DateTime;
-use Doctrine\DBAL\Exception as DoctrineException;
+use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Container\ContainerInterface;
 
@@ -21,20 +18,11 @@ trait FunctionalTestsTrait
 
     protected function addPlayerJoin(string $callsign, string $ipAddress, string $hostname = 'home-network.local', string $bzid = null): void
     {
-        static $service;
-
-        if ($service === null) {
-            /** @var AddressRepository $addressRepo */
-            $addressRepo = $this->em->getRepository(Address::class);
-
-            /** @var CallsignRepository $callsignRepo */
-            $callsignRepo = $this->em->getRepository(Callsign::class);
-
-            /** @var PlayerJoinRepository $joinRepo */
-            $joinRepo = $this->em->getRepository(PlayerJoin::class);
-
-            $service = new RawLogService($addressRepo, $callsignRepo, $joinRepo);
-        }
+        $service = new RawLogService(
+            $this->em->getRepository(Address::class),
+            $this->em->getRepository(Callsign::class),
+            $this->em->getRepository(PlayerJoin::class),
+        );
 
         $rawLogEntry = new RawLog();
         $rawLogEntry->setCallsign($callsign);
@@ -60,31 +48,9 @@ trait FunctionalTestsTrait
         $this->em = $container->get('doctrine')->getManager(); // @phpstan-ignore-line
     }
 
-    /**
-     * @param array<class-string> $entities
-     *
-     * @see https://symfonycasts.com/screencast/phpunit/control-database
-     *
-     * @throws DoctrineException
-     */
-    protected function truncateEntities(array $entities): void
+    protected function truncateEntities(): void
     {
-        $connection = $this->getEntityManager()->getConnection();
-        $databasePlatform = $connection->getDatabasePlatform();
-
-        if ($databasePlatform->supportsForeignKeyConstraints()) {
-            $connection->executeQuery('SET FOREIGN_KEY_CHECKS=0');
-        }
-
-        foreach ($entities as $entity) {
-            $query = $databasePlatform->getTruncateTableSQL(
-                $this->getEntityManager()->getClassMetadata($entity)->getTableName()
-            );
-            $connection->executeQuery($query);
-        }
-
-        if ($databasePlatform->supportsForeignKeyConstraints()) {
-            $connection->executeQuery('SET FOREIGN_KEY_CHECKS=1');
-        }
+        $purger = new ORMPurger($this->getEntityManager());
+        $purger->purge();
     }
 }

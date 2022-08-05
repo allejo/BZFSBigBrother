@@ -13,8 +13,11 @@ use Webmozart\Assert\Assert;
 
 class RawLogService
 {
-    public function __construct(private readonly AddressRepository $addressRepository, private readonly CallsignRepository $callsignRepository, private readonly PlayerJoinRepository $playerJoinRepository)
-    {
+    public function __construct(
+        private readonly AddressRepository $addressRepository,
+        private readonly CallsignRepository $callsignRepository,
+        private readonly PlayerJoinRepository $playerJoinRepository,
+    ) {
     }
 
     public function updatePlayerData(RawLog $rawLog): bool
