@@ -8,6 +8,7 @@ use App\Service\ApiQueryResponseService;
 use App\Service\RawLogService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -15,6 +16,26 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route(path: '/api')]
 class ApiController extends AbstractController
 {
+    #[Route(path: '/dronebl', name: 'dronebl')]
+    public function dronebl(Request $request): Response
+    {
+        $ipAddress = $request->get('ip');
+        $inverseIP = implode('.', array_reverse(explode('.', $ipAddress)));
+        $dns = sprintf('%s.dnsbl.dronebl.org', $inverseIP);
+
+        $result = dns_get_record($dns, DNS_A);
+        $block = count($result) > 0;
+
+        return new JsonResponse([
+            'ip' => $ipAddress,
+            'countryCode' => '',
+            'countryName' => '',
+            'asn' => 0,
+            'isp' => '',
+            'block' => (int)$block,
+        ]);
+    }
+
     #[Route(path: '/query', name: 'api_query')]
     public function query(Request $request, ApiQueryResponseService $responseService): Response
     {
