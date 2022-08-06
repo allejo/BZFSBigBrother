@@ -23,7 +23,7 @@ class ApiController extends AbstractController
         $inverseIP = implode('.', array_reverse(explode('.', $ipAddress)));
         $dns = sprintf('%s.dnsbl.dronebl.org', $inverseIP);
 
-        $result = dns_get_record($dns, DNS_A);
+        $result = dns_get_record($dns, DNS_A) ?: [];
         $block = count($result) > 0;
 
         return new JsonResponse([
