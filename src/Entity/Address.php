@@ -15,8 +15,8 @@ use Doctrine\ORM\Mapping as ORM;
 class Address
 {
     #[ORM\Id]
-    #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue]
+    #[ORM\Column(options: ['unsigned' => true])]
     private readonly int $id;
 
     #[ORM\Column(type: 'string', length: 15, nullable: true)]

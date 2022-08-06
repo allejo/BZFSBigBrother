@@ -16,8 +16,8 @@ use Doctrine\ORM\Mapping as ORM;
 class APIKey
 {
     #[ORM\Id]
-    #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue]
+    #[ORM\Column(options: ['unsigned' => true])]
     private readonly int $id;
 
     #[ORM\Column(type: 'string', length: 40, nullable: false)]

@@ -11,8 +11,8 @@ use Doctrine\ORM\Mapping as ORM;
 class Callsign
 {
     #[ORM\Id]
-    #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue]
+    #[ORM\Column(options: ['unsigned' => true])]
     private readonly int $id;
 
     #[ORM\Column(type: 'string', length: 32, nullable: true)]

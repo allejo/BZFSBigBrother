@@ -12,8 +12,8 @@ use Doctrine\ORM\Mapping as ORM;
 class PlayerJoin
 {
     #[ORM\Id]
-    #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue]
+    #[ORM\Column(options: ['unsigned' => true])]
     private readonly int $id;
 
     #[ORM\ManyToOne(targetEntity: Callsign::class)]
