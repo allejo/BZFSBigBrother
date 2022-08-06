@@ -97,7 +97,7 @@ class ApiControllerTest extends WebTestCase
         ]);
 
         self::assertResponseIsSuccessful();
-        $response = $this->client->getResponse()->getContent() ?? '';
+        $response = $this->client->getResponse()->getContent() ?: '';
 
         self::assertEquals(
             <<<'RES'
@@ -125,7 +125,7 @@ class ApiControllerTest extends WebTestCase
         ]);
 
         self::assertResponseIsSuccessful();
-        $response = $this->client->getResponse()->getContent() ?? '';
+        $response = $this->client->getResponse()->getContent() ?: '';
 
         self::assertEquals(
             <<<'RES'
