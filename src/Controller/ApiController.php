@@ -16,7 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route(path: '/api')]
 class ApiController extends AbstractController
 {
-    #[Route(path: '/dronebl', name: 'dronebl')]
+    #[Route(path: '/dronebl', name: 'api_drone_bl')]
     public function dronebl(Request $request): Response
     {
         $ipAddress = $request->get('ip');
