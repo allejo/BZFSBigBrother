@@ -3,6 +3,7 @@
 namespace App\Tests\Controller;
 
 use App\Entity\APIKey;
+use App\Entity\PlayerJoin;
 use App\Tests\FunctionalTestsTrait;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -44,10 +45,16 @@ class ApiControllerTest extends WebTestCase
 
     public function testQueryForIPWithNoResults(): void
     {
-        $this->client->request('GET', '/api/query', [
-            'apikey' => $this->apiKey->getKey(),
-            'query' => '127.0.0.1',
-        ]);
+        $this->client->request(
+            'GET',
+            '/api/query',
+            [
+                'query' => '127.0.0.1',
+            ],
+            server: [
+                'HTTP_X-API-KEY' => $this->apiKey->getKey(),
+            ],
+        );
 
         self::assertResponseIsSuccessful();
         $response = $this->client->getResponse()->getContent() ?: '';
@@ -67,10 +74,16 @@ class ApiControllerTest extends WebTestCase
         $this->addPlayerJoin('allejo', '127.0.0.1');
         $this->addPlayerJoin('not allejo', '127.0.0.1');
 
-        $this->client->request('GET', '/api/query', [
-            'apikey' => $this->apiKey->getKey(),
-            'query' => '127.0.0.1',
-        ]);
+        $this->client->request(
+            'GET',
+            '/api/query',
+            [
+                'query' => '127.0.0.1',
+            ],
+            server: [
+                'HTTP_X-API-KEY' => $this->apiKey->getKey(),
+            ],
+        );
 
         self::assertResponseIsSuccessful();
         $response = $this->client->getResponse()->getContent() ?: '';
@@ -87,10 +100,16 @@ class ApiControllerTest extends WebTestCase
 
     public function testQueryForCallsignWithNoResults(): void
     {
-        $this->client->request('GET', '/api/query', [
-            'apikey' => $this->apiKey->getKey(),
-            'query' => 'allejo',
-        ]);
+        $this->client->request(
+            'GET',
+            '/api/query',
+            [
+                'query' => 'allejo',
+            ],
+            server: [
+                'HTTP_X-API-KEY' => $this->apiKey->getKey(),
+            ],
+        );
 
         self::assertResponseIsSuccessful();
         $response = $this->client->getResponse()->getContent() ?: '';
@@ -110,10 +129,16 @@ class ApiControllerTest extends WebTestCase
         $this->addPlayerJoin('allejo', '127.0.0.1');
         $this->addPlayerJoin('allejo', '127.0.0.2');
 
-        $this->client->request('GET', '/api/query', [
-            'apikey' => $this->apiKey->getKey(),
-            'query' => 'allejo',
-        ]);
+        $this->client->request(
+            'GET',
+            '/api/query',
+            [
+                'query' => 'allejo',
+            ],
+            server: [
+                'HTTP_X-API-KEY' => $this->apiKey->getKey(),
+            ],
+        );
 
         self::assertResponseIsSuccessful();
         $response = $this->client->getResponse()->getContent() ?: '';
@@ -138,10 +163,16 @@ class ApiControllerTest extends WebTestCase
         $this->addPlayerJoin('not allejo', '127.0.0.2');
         $this->addPlayerJoin('not allejo', '127.0.0.2');
 
-        $this->client->request('GET', '/api/query', [
-            'apikey' => $this->apiKey->getKey(),
-            'query' => 'allejo',
-        ]);
+        $this->client->request(
+            'GET',
+            '/api/query',
+            [
+                'query' => 'allejo',
+            ],
+            server: [
+                'HTTP_X-API-KEY' => $this->apiKey->getKey(),
+            ],
+        );
 
         self::assertResponseIsSuccessful();
         $response = $this->client->getResponse()->getContent() ?: '';

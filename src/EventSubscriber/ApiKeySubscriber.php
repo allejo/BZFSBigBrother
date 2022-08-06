@@ -28,7 +28,7 @@ class ApiKeySubscriber implements EventSubscriberInterface
         }
 
         if ($controller instanceof ApiController) {
-            $apiKeyRaw = $event->getRequest()->query->get('apikey');
+            $apiKeyRaw = $event->getRequest()->headers->get('x-api-key');
             $keyRepository = $this->entityManager->getRepository(APIKey::class);
             $apiKey = $keyRepository->findOneBy([
                 'active' => true,
