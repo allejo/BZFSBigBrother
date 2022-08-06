@@ -6,6 +6,7 @@ use App\Entity\RawLog;
 use App\Repository\RawLogRepository;
 use App\Service\ApiQueryResponseService;
 use App\Service\RawLogService;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -16,7 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route(path: '/api')]
 class ApiController extends AbstractController
 {
-    #[Route(path: '/dronebl', name: 'api_drone_bl')]
+    #[Route(path: '/dronebl', name: 'api_drone_bl', methods: ['GET'])]
     public function dronebl(Request $request): Response
     {
         $ipAddress = $request->get('ip');
@@ -36,13 +37,13 @@ class ApiController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/query', name: 'api_query')]
+    #[Route(path: '/query', name: 'api_query', methods: ['GET'])]
     public function query(Request $request, ApiQueryResponseService $responseService): Response
     {
         return $responseService->renderResponseFromQuery($request->get('query'));
     }
 
-    #[Route(path: '/report-join', name: 'api_report_join')]
+    #[Route(path: '/report-join', name: 'api_report_join', methods: ['POST'])]
     public function reportJoin(
         Request $request,
         RawLogService $rawLogService,
@@ -55,16 +56,17 @@ class ApiController extends AbstractController
         $entry->setCallsign($request->get('callsign'));
         $entry->setBzid($request->get('bzid'));
         $entry->setIpAddress($request->get('ipaddress'));
-        $entry->setHostname($request->get('hostname'));
+        $entry->setHostname(gethostbyaddr($request->get('ipaddress')) ?: null);
         $entry->setApikey($apiKey);
         $entry->setBuild($request->get('build'));
+        $entry->setEventTime(new DateTime());
 
         $rawLogRepository->add($entry);
         $rawLogService->updatePlayerData($entry);
         $entityManager->flush();
 
-        return $this->render('api/report-join.txt.twig', [
-            'log' => $entry,
-        ]);
+        $response = 'SUCCESS: Added join for "%s" (BZID: %s) from %s';
+
+        return new Response(sprintf($response, $entry->getCallsign(), $entry->getBzid(), $entry->getIpAddress()));
     }
 }

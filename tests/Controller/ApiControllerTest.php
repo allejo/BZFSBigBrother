@@ -189,4 +189,35 @@ class ApiControllerTest extends WebTestCase
             rtrim($response)
         );
     }
+
+    public function testReportJoinUpdatesCount(): void
+    {
+        $this->client->request(
+            'POST',
+            '/api/report-join',
+            [
+                'callsign' => 'allejo',
+                'bzid' => '123456',
+                'ipaddress' => '8.8.8.8',
+                'build' => '2.4.24.20220319-MAINT-mac64xc1330-SDL2',
+            ],
+            server: [
+                'HTTP_X-API-KEY' => $this->apiKey->getKey(),
+            ],
+        );
+
+        self::assertResponseIsSuccessful();
+        $response = $this->client->getResponse()->getContent() ?: '';
+
+        self::assertEquals(
+            'SUCCESS: Added join for "allejo" (BZID: 123456) from 8.8.8.8',
+            $response
+        );
+
+        $joinRepo = $this->getEntityManager()->getRepository(PlayerJoin::class);
+        $callsigns = $joinRepo->findUniqueJoinsByIP('8.8.8.8');
+
+        self::assertCount(1, $callsigns);
+        self::assertEquals('allejo', $callsigns[0]['callsign']);
+    }
 }
