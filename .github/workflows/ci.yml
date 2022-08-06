@@ -113,7 +113,9 @@ jobs:
               run: composer ${{ matrix.dependencies }} --prefer-dist --no-progress --no-suggest --ignore-platform-reqs
 
             - name: Run test suite
-              run: composer test
+              run: |
+                  bin/console doctrine:schema:create --env=test
+                  composer test
 
             - name: Push to Codecov
               if: matrix.php-versions == '8.1' && runner.os == 'Linux' && matrix.dependencies == 'install'
