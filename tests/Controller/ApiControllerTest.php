@@ -85,6 +85,25 @@ class ApiControllerTest extends WebTestCase
         );
     }
 
+    public function testQueryForCallsignWithNoResults(): void
+    {
+        $this->client->request('GET', '/api/query', [
+            'apikey' => $this->apiKey->getKey(),
+            'query' => 'allejo',
+        ]);
+
+        self::assertResponseIsSuccessful();
+        $response = $this->client->getResponse()->getContent() ?: '';
+
+        self::assertEquals(
+            <<<'RES'
+            Results of callsign lookup for allejo:
+              No results found
+            RES,
+            rtrim($response)
+        );
+    }
+
     public function testQueryForCallsignWithSingleCallsignAndMultipleIPs(): void
     {
         $this->addPlayerJoin('allejo', '127.0.0.1');
