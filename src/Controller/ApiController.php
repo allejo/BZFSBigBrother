@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\RawLog;
 use App\Repository\RawLogRepository;
 use App\Service\ApiQueryResponseService;
+use App\Service\LatencyRecordService;
 use App\Service\RawLogService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -68,5 +69,16 @@ class ApiController extends AbstractController
         $response = 'SUCCESS: Added join for "%s" (BZID: %s) from %s';
 
         return new Response(sprintf($response, $entry->getCallsign(), $entry->getBzid(), $entry->getIpAddress()));
+    }
+
+    #[Route(path: '/report-latency', name: 'api_report_latency', methods: ['POST'])]
+    public function reportLatency(Request $request, LatencyRecordService $latencyRecordService): Response
+    {
+        $latencyRecordService->setHostname($request->get('hostname'));
+        $latencyRecordService->setPort((int)$request->get('port'));
+        $latencyRecordService->setApiKey($request->attributes->get('apikey'));
+        $latencyRecordService->recordLatency($request->get('latency'));
+
+        return new Response('SUCCESS: Latency reported successfully.');
     }
 }

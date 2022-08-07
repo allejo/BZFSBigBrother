@@ -3,8 +3,11 @@
 namespace App\Tests\Controller;
 
 use App\Entity\APIKey;
+use App\Entity\LatencyRecord;
 use App\Entity\PlayerJoin;
+use App\Entity\ServerInstance;
 use App\Tests\FunctionalTestsTrait;
+use DateTime;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -219,5 +222,56 @@ class ApiControllerTest extends WebTestCase
 
         self::assertCount(1, $callsigns);
         self::assertEquals('allejo', $callsigns[0]['callsign']);
+    }
+
+    public function testReportLatencyUpdatesCount(): void
+    {
+        $this->addPlayerJoin('allejo', '127.0.0.1');
+        $this->addPlayerJoin('kierra', '127.0.0.2');
+
+        $this->client->request('POST', '/api/report-latency', [
+            'hostname' => 'bzflag.allejo.io',
+            'port' => 5154,
+            'latency' => [
+                [
+                    'ipaddress' => '127.0.0.1',
+                    'lag' => 90,
+                    'jitter' => 2,
+                    'packetloss' => 0.0,
+                    'time' => (new DateTime())->modify('-10 minutes')->format(DATE_ATOM),
+                ],
+                [
+                    'ipaddress' => '127.0.0.2',
+                    'lag' => 35,
+                    'jitter' => 0,
+                    'packetloss' => 0.0,
+                    'time' => (new DateTime())->modify('-10 minutes')->format(DATE_ATOM),
+                ],
+                [
+                    'ipaddress' => '127.0.0.1',
+                    'lag' => 120,
+                    'jitter' => 0,
+                    'packetloss' => 0.02,
+                    'time' => (new DateTime())->modify('-5 minutes')->format(DATE_ATOM),
+                ],
+                [
+                    'ipaddress' => '127.0.0.1',
+                    'lag' => 105,
+                    'jitter' => 1,
+                    'packetloss' => 0.0,
+                    'time' => (new DateTime())->format(DATE_ATOM),
+                ],
+            ],
+        ], server: [
+            'HTTP_X-API-KEY' => $this->apiKey->getKey(),
+        ]);
+
+        self::assertResponseIsSuccessful();
+
+        $servers = $this->getEntityManager()->getRepository(ServerInstance::class)->findAll();
+        $records = $this->getEntityManager()->getRepository(LatencyRecord::class)->findAll();
+
+        self::assertCount(1, $servers);
+        self::assertCount(4, $records);
     }
 }
